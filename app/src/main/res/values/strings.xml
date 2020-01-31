@@ -3,4 +3,5 @@
     <string name="login">Login</string>
     <string name="input_email">Input Email</string>
     <string name="input_password">Input Password</string>
+    <string name="title_activity_checkin_list">CheckinListActivity</string>
 </resources>
