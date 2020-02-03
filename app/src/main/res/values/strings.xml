@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Checkin Ignitor</string>
     <string name="login">Login</string>
+    <string name="logout">Logout</string>
     <string name="input_email">Input Email</string>
     <string name="input_password">Input Password</string>
+    <string name="setting">Setting</string>
     <string name="title_activity_checkin_list">CheckinListActivity</string>
 </resources>
