@@ -66,12 +66,12 @@ class CheckinListActivity : AppCompatActivity() {
 
     private fun getCurrentUser(): FirebaseUser? {
         val user = FirebaseAuth.getInstance().currentUser
-        user?.let{
-            var name = it.displayName
-            var photoUrl = it.photoUrl
-            val email = it.email
-            val emailVerified = it.isEmailVerified
-            val uid = it.uid
+        user?.let{ user ->
+            var name = user.displayName
+            var photoUrl = user.photoUrl
+            val email = user.email
+            val emailVerified = user.isEmailVerified
+            val uid = user.uid
             for(userInfo in user.providerData){
                 if (name.isNullOrEmpty() && userInfo.displayName != null){
                     name = userInfo.displayName
@@ -80,8 +80,14 @@ class CheckinListActivity : AppCompatActivity() {
                     photoUrl = userInfo.photoUrl
                 }
             }
-            val profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(name).setPhotoUri(photoUrl).build()
-            updateProfile(user, profileUpdates)
+            name?.apply{
+                email?.let{
+                    val emailArray = email.split("@")
+                    name = emailArray[0]
+                }
+                val profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(name).setPhotoUri(photoUrl).build()
+                updateProfile(user, profileUpdates)
+            }
             Log.d(TAG, "name:$name")
             Log.d(TAG, "email:$email")
             Log.d(TAG, "photoUrl:$photoUrl")
@@ -100,16 +106,23 @@ class CheckinListActivity : AppCompatActivity() {
     }
 
     private fun fetchOwnCheckinList(user: String){
-        val docRef = db.collection("attendance_user").document(user)
+        val docsRef = db.collection("attendance_user").document(user).collection("date")
         val source = Source.CACHE
 
-        docRef.get(source).addOnCompleteListener { task ->
+        docsRef.get(source).addOnCompleteListener { task ->
             if(task.isSuccessful){
                 // offline cache
                 val document = task.result
-                Log.d(TAG, "Cached document data: ${document?.data}")
+                Log.d(TAG, "Cached document data: ${document?.documents}")
            }else{
                 Log.d(TAG, "Cached get failed: ", task.exception)
+                docsRef.get().addOnSuccessListener { docs ->
+                    for(doc in docs){
+                        Log.d(TAG, "${doc.id} => ${doc.data}")
+                    }
+                }.addOnFailureListener{ exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
             }
         }
     }
