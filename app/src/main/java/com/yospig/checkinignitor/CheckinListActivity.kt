@@ -62,6 +62,13 @@ class CheckinListActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         getCurrentUser()
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let{
+            val name = it.displayName
+            if(name != null) {
+                fetchOwnCheckinList(name)
+            }
+        }
     }
 
     private fun getCurrentUser(): FirebaseUser? {
@@ -107,23 +114,12 @@ class CheckinListActivity : AppCompatActivity() {
 
     private fun fetchOwnCheckinList(user: String){
         val docsRef = db.collection("attendance_user").document(user).collection("date")
-        val source = Source.CACHE
-
-        docsRef.get(source).addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                // offline cache
-                val document = task.result
-                Log.d(TAG, "Cached document data: ${document?.documents}")
-           }else{
-                Log.d(TAG, "Cached get failed: ", task.exception)
-                docsRef.get().addOnSuccessListener { docs ->
-                    for(doc in docs){
-                        Log.d(TAG, "${doc.id} => ${doc.data}")
-                    }
-                }.addOnFailureListener{ exception ->
-                    Log.w(TAG, "Error getting documents: ", exception)
-                }
+        docsRef.get().addOnSuccessListener { docs ->
+            for(doc in docs){
+                Log.d(TAG, "${doc.id} => ${doc.data}")
             }
+        }.addOnFailureListener{ exception ->
+            Log.w(TAG, "Error getting documents: ", exception)
         }
     }
 }
