@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -16,7 +17,9 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.yospig.checkinignitor.entities.AttendanceInTime
+import com.yospig.checkinignitor.entities.AttendanceUser
 import kotlinx.android.synthetic.main.activity_checkin_list.*
+import java.util.*
 
 class CheckinListActivity : AppCompatActivity() {
 
@@ -68,6 +71,8 @@ class CheckinListActivity : AppCompatActivity() {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let{
             val name = it.displayName
+            val userName:TextView = findViewById(R.id.userName)
+            userName.setText(name)
             if(name != null) {
                 fetchOwnCheckinList(name)
             }
@@ -118,18 +123,18 @@ class CheckinListActivity : AppCompatActivity() {
     private fun fetchOwnCheckinList(user: String){
         val docsRef = db.collection("attendance_user").document(user).collection("date")
         var attendanceArray = arrayOf<String>()
-//        val dataArray = mutableListOf<String>()
+        val listView = findViewById<ListView>(R.id.attendanceList)
         docsRef.get().addOnSuccessListener { docs ->
             for(doc in docs){
                 Log.d(TAG, "${doc.id} => ${doc.data["in"]}")
-                attendanceArray += "${doc.id}"
+                // TODO:use dto
+//                val doc.toObject(AttendanceUser::class.java)
+                attendanceArray += doc.data["in"].toString()
             }
+            val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, attendanceArray)
+            listView.adapter = arrayAdapter
         }.addOnFailureListener{ exception ->
             Log.w(TAG, "Error getting documents: ", exception)
         }
-//        val dataArray = arrayOf("Kotlin","Android","iOS","Swift","Java")
-        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, attendanceArray)
-        val listView = findViewById<ListView>(R.id.attendanceList)
-        listView.adapter = arrayAdapter
     }
 }
