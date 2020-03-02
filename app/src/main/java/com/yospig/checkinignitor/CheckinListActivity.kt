@@ -126,10 +126,11 @@ class CheckinListActivity : AppCompatActivity() {
         val listView = findViewById<ListView>(R.id.attendanceList)
         docsRef.get().addOnSuccessListener { docs ->
             for(doc in docs){
-                Log.d(TAG, "${doc.id} => ${doc.data["in"]}")
+                Log.d(TAG, "${doc.id} => ${doc.data}")
                 // TODO:use dto
 //                val doc.toObject(AttendanceUser::class.java)
-                attendanceArray += doc.data["in"].toString()
+                val line = doc.id + " [in] " + doc.data["in_time_str"] + " [out] " + doc.data["out_time_str"]
+                attendanceArray += line
             }
             val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, attendanceArray)
             listView.adapter = arrayAdapter
