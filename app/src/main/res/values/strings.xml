@@ -5,6 +5,13 @@
     <string name="input_email">Input Email</string>
     <string name="input_password">Input Password</string>
     <string name="setting">Setting</string>
-    <string name="title_activity_checkin_list">CheckinListActivity</string>
-    <string name="userName">user name</string>
+    <string name="title_activity_check_in_list">CheckinListActivity</string>
+    <string name="title_activity_check_inout">CheckinOutActivity</string>
+    <string name="user_name">user name</string>
+    <string name="check_in">check in</string>
+    <string name="check_out">check out</string>
+    <string name="no_date">no date</string>
+    <string name="pick_date">日付選択</string>
+    <string name="no_data">no data</string>
+    <string name="pick_time">時間選択</string>
 </resources>

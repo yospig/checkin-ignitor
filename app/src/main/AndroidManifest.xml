@@ -11,12 +11,14 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".CheckinListActivity"
-            android:label="@string/title_activity_checkin_list"
+            android:label="@string/title_activity_check_in_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".CheckInOutActivity"
+            android:label="@string/title_activity_check_inout"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

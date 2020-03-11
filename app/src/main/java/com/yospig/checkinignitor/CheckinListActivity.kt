@@ -27,15 +27,16 @@ class CheckinListActivity : AppCompatActivity() {
     // Access a Cloud Firestore instance from your Activity
     val db = FirebaseFirestore.getInstance()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_checkin_list)
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
+            val intent = Intent(this, CheckInOutActivity::class.java).apply{}
+            startActivity(intent)
         }
     }
 
