@@ -38,6 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/dateView" />
 
     <Button
+        android:id="@+id/dateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
@@ -48,14 +49,25 @@
         app:layout_constraintTop_toBottomOf="@+id/timeView" />
 
     <Button
+        android:id="@+id/timeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:onClick="showTimePickerDialog"
+        android:text="@string/pick_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateButton" />
+
+    <Button
         android:id="@+id/check_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="123dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="356dp"
         android:text="@string/check_out"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.638"
+        app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timeView" />
 
@@ -63,11 +75,11 @@
         android:id="@+id/check_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="356dp"
         android:layout_marginEnd="148dp"
         android:text="@string/check_in"
         app:layout_constraintEnd_toEndOf="@+id/check_out"
-        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintHorizontal_bias="0.657"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timeView" />
 
