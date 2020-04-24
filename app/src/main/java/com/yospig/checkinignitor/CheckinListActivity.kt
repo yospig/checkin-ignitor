@@ -10,16 +10,11 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Source
-import com.yospig.checkinignitor.entities.AttendanceInTime
-import com.yospig.checkinignitor.entities.AttendanceUser
 import kotlinx.android.synthetic.main.activity_checkin_list.*
-import java.util.*
 
 class CheckinListActivity : AppCompatActivity() {
 
@@ -66,6 +61,10 @@ class CheckinListActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        val user = getAuthInformation()
+    }
+
+    private fun getAuthInformation():FirebaseUser? {
         getCurrentUser()
         val user = FirebaseAuth.getInstance().currentUser
         user?.let{
@@ -76,6 +75,7 @@ class CheckinListActivity : AppCompatActivity() {
                 fetchOwnCheckinList(name)
             }
         }
+        return user
     }
 
     private fun getCurrentUser(): FirebaseUser? {
