@@ -11,9 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import com.yospig.checkinignitor.entities.IgnitorFirebaseUserAuth
 import kotlinx.android.synthetic.main.activity_checkin_list.*
 
 class CheckinListActivity : AppCompatActivity() {
@@ -30,6 +29,14 @@ class CheckinListActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
             val intent = Intent(this, CheckInOutActivity::class.java).apply{}
             startActivity(intent)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val auth = IgnitorFirebaseUserAuth()
+        auth.user.displayName?.let{ it ->
+            displayView(it)
         }
     }
 
@@ -59,64 +66,10 @@ class CheckinListActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        val user = getAuthInformation()
-    }
-
-    private fun getAuthInformation():FirebaseUser? {
-        getCurrentUser()
-        val user = FirebaseAuth.getInstance().currentUser
-        user?.let{
-            val name = it.displayName
-            val userName:TextView = findViewById(R.id.userName)
-            userName.setText(name)
-            if(name != null) {
-                fetchOwnCheckinList(name)
-            }
-        }
-        return user
-    }
-
-    private fun getCurrentUser(): FirebaseUser? {
-        val user = FirebaseAuth.getInstance().currentUser
-        user?.let{ user ->
-            var name = user.displayName
-            var photoUrl = user.photoUrl
-            val email = user.email
-            val emailVerified = user.isEmailVerified
-            val uid = user.uid
-            for(userInfo in user.providerData){
-                if (name.isNullOrEmpty() && userInfo.displayName != null){
-                    name = userInfo.displayName
-                }
-                if (photoUrl == null && userInfo.photoUrl != null){
-                    photoUrl = userInfo.photoUrl
-                }
-            }
-            name?.apply{
-                email?.let{
-                    val emailArray = email.split("@")
-                    name = emailArray[0]
-                }
-                val profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(name).setPhotoUri(photoUrl).build()
-                updateProfile(user, profileUpdates)
-            }
-            Log.d(TAG, "name:$name")
-            Log.d(TAG, "email:$email")
-            Log.d(TAG, "photoUrl:$photoUrl")
-            Log.d(TAG, "emailVerified:$emailVerified")
-            Log.d(TAG, "uid:$uid")
-        }
-        return user
-    }
-
-    private fun updateProfile(user: FirebaseUser, profileUpdates: UserProfileChangeRequest) {
-        user.updateProfile(profileUpdates)?.addOnCompleteListener{ task ->
-            if(task.isSuccessful){
-                Log.d(TAG, "User profile updated.")
-            }
-        }
+    private fun displayView(name: String){
+        val userName:TextView = findViewById(R.id.userName)
+        userName.text = name
+        fetchOwnCheckinList(name)
     }
 
     private fun fetchOwnCheckinList(user: String){
@@ -127,7 +80,6 @@ class CheckinListActivity : AppCompatActivity() {
             for(doc in docs){
                 Log.d(TAG, "${doc.id} => ${doc.data}")
                 // TODO:use dto
-//                val doc.toObject(AttendanceUser::class.java)
                 val line = doc.id + " [in] " + doc.data["in_time_str"] + " [out] " + doc.data["out_time_str"]
                 attendanceArray += line
             }

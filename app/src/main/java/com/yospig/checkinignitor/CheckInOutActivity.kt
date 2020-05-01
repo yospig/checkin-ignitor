@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.functions.FirebaseFunctions
 import com.yospig.checkinignitor.entities.AttendanceUserCheckInTime
-import com.yospig.checkinignitor.entities.IgnitorFirebaseAuth
+import com.yospig.checkinignitor.entities.IgnitorFirebaseUserAuth
 import kotlinx.android.synthetic.main.activity_check_inout.*
 import java.sql.Timestamp
 import java.time.LocalDateTime
@@ -55,7 +55,7 @@ class CheckInOutActivity: FragmentActivity(),DatePickerDialog.OnDateSetListener,
     // set Check in datetime to Cloud Firestore
     private fun setCheckInData(dateStr: String, timeStr: String) {
         val dateDoc = dateStr.replace("/","")
-        val auth = IgnitorFirebaseAuth()
+        val auth = IgnitorFirebaseUserAuth()
         val user = auth.getAuthInformation()
         user.displayName?.let{
             val targetDoc = db.collection(SET_COLLECTION).document(dateDoc).collection(SET_USER_COLLECTION).document(it)

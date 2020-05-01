@@ -1,14 +1,17 @@
 package com.yospig.checkinignitor.entities
 
 import android.util.Log
-import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.yospig.checkinignitor.R
 
-class IgnitorFirebaseAuth() {
-    private val TAG = "FirebaseAuth"
+class IgnitorFirebaseUserAuth() {
+    private val TAG = "IgnitorFirebaseAuth"
+    var user: FirebaseUser
+
+    init{
+        user = getAuthInformation()
+    }
 
     fun getAuthInformation():FirebaseUser {
         getCurrentUser()
