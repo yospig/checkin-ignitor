@@ -14,8 +14,8 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.functions.FirebaseFunctions
 import com.yospig.checkinignitor.entities.AttendanceUserCheckInTime
+import com.yospig.checkinignitor.entities.AttendanceUserCheckOutTime
 import com.yospig.checkinignitor.entities.IgnitorFirebaseUserAuth
 import kotlinx.android.synthetic.main.activity_check_inout.*
 import java.sql.Timestamp
@@ -28,7 +28,7 @@ class CheckInOutActivity: FragmentActivity(),DatePickerDialog.OnDateSetListener,
     private val TAG = "CheckinOutActivity"
     var dateStr = ""
     var timeStr = ""
-    private lateinit var functions: FirebaseFunctions
+//    private lateinit var functions: FirebaseFunctions
     val db = FirebaseFirestore.getInstance()
     val SET_COLLECTION = "attendance"
     val SET_USER_COLLECTION = "user"
@@ -39,6 +39,7 @@ class CheckInOutActivity: FragmentActivity(),DatePickerDialog.OnDateSetListener,
         setContentView(R.layout.activity_check_inout)
 
         val inButton: Button = findViewById(R.id.check_in)
+        val outButton: Button = findViewById(R.id.check_out)
         val currentDateTime: LocalDateTime = LocalDateTime.now()
         dateStr =  currentDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
         timeStr =  currentDateTime.format(DateTimeFormatter.ofPattern("hh:mm"))
@@ -50,17 +51,33 @@ class CheckInOutActivity: FragmentActivity(),DatePickerDialog.OnDateSetListener,
         inButton.setOnClickListener {
             setCheckInData(dateStr, timeStr)
         }
+        outButton.setOnClickListener {
+            setCheckOutData(dateStr, timeStr)
+        }
     }
 
     // set Check in datetime to Cloud Firestore
     private fun setCheckInData(dateStr: String, timeStr: String) {
         val dateDoc = dateStr.replace("/","")
         val auth = IgnitorFirebaseUserAuth()
-        val user = auth.getAuthInformation()
-        user.displayName?.let{
+        auth.user.displayName?.let{
             val targetDoc = db.collection(SET_COLLECTION).document(dateDoc).collection(SET_USER_COLLECTION).document(it)
             val splitTime = timeStr.split(":")
             val dto = AttendanceUserCheckInTime(splitTime[0], splitTime[1], timeStr, Timestamp(System.currentTimeMillis()))
+            targetDoc.set(dto, SetOptions.merge())
+                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        }
+    }
+
+    // set Check out datetime to Cloud Firestore
+    private fun setCheckOutData(dateStr: String, timeStr: String) {
+        val dateDoc = dateStr.replace("/","")
+        val auth = IgnitorFirebaseUserAuth()
+        auth.user.displayName?.let{
+            val targetDoc = db.collection(SET_COLLECTION).document(dateDoc).collection(SET_USER_COLLECTION).document(it)
+            val splitTime = timeStr.split(":")
+            val dto = AttendanceUserCheckOutTime(splitTime[0], splitTime[1], timeStr, Timestamp(System.currentTimeMillis()))
             targetDoc.set(dto, SetOptions.merge())
                 .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
